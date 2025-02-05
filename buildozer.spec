@@ -1,13 +1,13 @@
 [app]
 
 # (str) Title of your application
-title = rgb_hex_converter
+title = Hotmail checker
 
 # (str) Package name
-package.name = converter
+package.name = badliar
 
 # (str) Package domain (needed for android/ios packaging)
-package.domain = com.yashas.app
+package.domain = com.lastwarninh.app
 
 # (str) Source code where the main.py live
 source.dir = .
@@ -37,17 +37,17 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy
+requirements = python3,kivy,kivymd
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
 # requirements.source.kivy = ../../kivy
 
 # (str) Presplash of the application
-presplash.filename = %(source.dir)s/loading.gif
+#presplash.filename = %(source.dir)s/loading.gif
 
 # (str) Icon of the application
-icon.filename = %(source.dir)s/logo.png
+#icon.filename = %(source.dir)s/logo.png
 
 # (str) Supported orientation (one of landscape, sensorLandscape, portrait or all)
 orientation = portrait
